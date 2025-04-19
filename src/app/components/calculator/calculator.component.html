@@ -1,0 +1,123 @@
+<div class="calculator-container">
+  <mat-card>
+    <mat-card-title>
+      <mat-icon class="title-icon">calculate</mat-icon>
+      Investment Calculator
+    </mat-card-title>
+    <mat-card-subtitle>Enter your investment details to see future projections</mat-card-subtitle>
+
+    <mat-card-content>
+      <form [formGroup]="investmentForm" (ngSubmit)="calculate()">
+        <div class="form-row-group">
+          <div class="form-subtitle">Initial Investment</div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>One-time Lump Sum (₹)</mat-label>
+              <input matInput type="number" formControlName="lumpSum" placeholder="0">
+              <mat-hint>Initial one-time investment amount</mat-hint>
+              <span matSuffix>₹</span>
+              <mat-error *ngIf="investmentForm.get('lumpSum')?.hasError('min')">
+                Amount cannot be negative
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Monthly SIP Amount (₹)</mat-label>
+              <input matInput type="number" formControlName="sip" placeholder="0">
+              <mat-hint>Regular monthly investment</mat-hint>
+              <span matSuffix>₹</span>
+              <mat-error *ngIf="investmentForm.get('sip')?.hasError('min')">
+                Amount cannot be negative
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="form-row-group">
+          <div class="form-subtitle">Return Rate & Duration</div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Expected Annual Return (%)</mat-label>
+              <input matInput type="number" formControlName="annualRatePercent" placeholder="12">
+              <mat-hint>Expected annual return rate</mat-hint>
+              <span matSuffix>%</span>
+              <mat-error *ngIf="investmentForm.get('annualRatePercent')?.hasError('min')">
+                Return rate cannot be negative
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>Investment Duration (Years)</mat-label>
+              <input matInput type="number" formControlName="years" placeholder="10">
+              <mat-hint>Number of years for the investment (max 50)</mat-hint>
+              <span matSuffix>years</span>
+              <mat-error *ngIf="investmentForm.get('years')?.hasError('min')">
+                Duration must be at least 1 year
+              </mat-error>
+              <mat-error *ngIf="investmentForm.get('years')?.hasError('max')">
+                Duration cannot exceed 50 years
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="form-row-group">
+          <div class="form-subtitle">SIP Step-up/down Settings</div>
+          <div class="form-info">
+            <mat-icon>info</mat-icon>
+            <span>Step-up means increasing your SIP annually, while step-down means decreasing it.</span>
+          </div>
+          
+          <div class="form-row">
+            <mat-form-field appearance="outline">
+              <mat-label>SIP Step-up/down Type</mat-label>
+              <mat-select formControlName="stepType">
+                <mat-option value="none">None</mat-option>
+                <mat-option value="stepup">Step-up</mat-option>
+                <mat-option value="stepdown">Step-down</mat-option>
+              </mat-select>
+              <mat-hint>Increase or decrease SIP amount yearly</mat-hint>
+            </mat-form-field>
+          </div>
+
+          <div class="form-row" *ngIf="investmentForm.get('stepType')?.value !== 'none'">
+            <mat-form-field appearance="outline">
+              <mat-label>Step-up/down Rate per Year (%)</mat-label>
+              <input matInput type="number" formControlName="stepRatePercent" placeholder="0">
+              <mat-hint>Annual percentage to increase/decrease SIP</mat-hint>
+              <span matSuffix>%</span>
+              <mat-error *ngIf="investmentForm.get('stepRatePercent')?.hasError('min')">
+                Step rate cannot be negative
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="investmentForm.invalid">
+            <mat-icon>bar_chart</mat-icon>
+            Calculate
+          </button>
+          <button mat-stroked-button type="button" (click)="resetForm()">
+            <mat-icon>refresh</mat-icon>
+            Reset
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div class="result-container" *ngIf="result">
+  <app-result [result]="result"></app-result>
+</div>

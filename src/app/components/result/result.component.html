@@ -1,0 +1,77 @@
+<div class="result-wrapper">
+  <mat-card>
+    <mat-card-title>Investment Results</mat-card-title>
+    <mat-card-subtitle>Based on your investment parameters</mat-card-subtitle>
+
+    <mat-card-content>
+      <div class="summary-section">
+        <div class="summary-tile">
+          <div class="summary-label">Future Value</div>
+          <div class="summary-value">₹{{ result.futureValue | number:'1.0-0' }}</div>
+        </div>
+        <div class="summary-tile">
+          <div class="summary-label">Total Invested</div>
+          <div class="summary-value">₹{{ result.totalInvested | number:'1.0-0' }}</div>
+        </div>
+        <div class="summary-tile">
+          <div class="summary-label">Total Gains</div>
+          <div class="summary-value">₹{{ result.gain | number:'1.0-0' }}</div>
+        </div>
+        <div class="summary-tile">
+          <div class="summary-label">Returns</div>
+          <div class="summary-value">{{ (result.gain / result.totalInvested) * 100 | number:'1.0-2' }}%</div>
+        </div>
+      </div>
+
+      <div class="charts-container">
+        <div class="chart-section">
+          <highcharts-chart
+            [Highcharts]="Highcharts"
+            [options]="chartOptions"
+            [update]="updateFlag"
+            style="width: 100%; height: 350px; display: block;"
+          ></highcharts-chart>
+        </div>
+
+        <div class="chart-section">
+          <highcharts-chart
+            [Highcharts]="Highcharts"
+            [options]="pieChartOptions"
+            [update]="updateFlag"
+            style="width: 100%; height: 300px; display: block;"
+          ></highcharts-chart>
+        </div>
+      </div>
+
+      <div class="details-section">
+        <h3>Year-by-Year Breakdown</h3>
+        <div class="table-container">
+          <table mat-table [dataSource]="result.yearlyData" class="mat-elevation-z2">
+            <ng-container matColumnDef="year">
+              <th mat-header-cell *matHeaderCellDef>Year</th>
+              <td mat-cell *matCellDef="let row">{{ row.year }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="investment">
+              <th mat-header-cell *matHeaderCellDef>Investment</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.investment | number:'1.0-0' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="interest">
+              <th mat-header-cell *matHeaderCellDef>Interest</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.interest | number:'1.0-0' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="balance">
+              <th mat-header-cell *matHeaderCellDef>Balance</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.balance | number:'1.0-0' }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="['year', 'investment', 'interest', 'balance']"></tr>
+            <tr mat-row *matRowDef="let row; columns: ['year', 'investment', 'interest', 'balance'];"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

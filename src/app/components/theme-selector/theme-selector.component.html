@@ -1,0 +1,69 @@
+<div class="theme-selector-container" [class.open]="isOpen">
+  <button mat-mini-fab class="toggle-button" (click)="togglePanel()" matTooltip="Theme Options">
+    <mat-icon>palette</mat-icon>
+  </button>
+
+  <div class="theme-panel">
+    <div class="panel-header">
+      <h3>Theme Settings</h3>
+      <button mat-icon-button (click)="togglePanel()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="panel-content">
+      <div class="theme-section">
+        <h4>Predefined Themes</h4>
+        <div class="theme-grid">
+          <ng-container *ngFor="let theme of themeOptions">
+            <div *ngIf="theme.id !== 'custom'"
+                 class="theme-option"
+                 [class.active]="currentTheme?.id === theme.id"
+                 (click)="selectTheme(theme)">
+              <div class="theme-preview" 
+                   [style.background-color]="theme.primaryColor"
+                   [style.color]="theme.isDark ? '#fff' : '#000'">
+                <div class="theme-accent" [style.background-color]="theme.accentColor"></div>
+                <span class="theme-name">{{ theme.name }}</span>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <mat-divider></mat-divider>
+
+      <div class="custom-theme-section">
+        <h4>Custom Theme</h4>
+        <div class="color-pickers">
+          <div class="color-picker">
+            <label>Primary Color</label>
+            <input type="color" [(ngModel)]="customPrimaryColor">
+          </div>
+          <div class="color-picker">
+            <label>Accent Color</label>
+            <input type="color" [(ngModel)]="customAccentColor">
+          </div>
+        </div>
+        
+        <mat-slide-toggle 
+          [(ngModel)]="customIsDark"
+          labelPosition="before">
+          Dark Mode
+        </mat-slide-toggle>
+
+        <div class="custom-theme-preview" 
+             [style.background-color]="customPrimaryColor"
+             [style.color]="customIsDark ? '#fff' : '#000'">
+          <div class="theme-accent" [style.background-color]="customAccentColor"></div>
+          <span>Custom Theme Preview</span>
+        </div>
+
+        <div class="action-buttons">
+          <button mat-stroked-button (click)="resetCustomColors()">Reset</button>
+          <button mat-raised-button color="primary" (click)="applyCustomTheme()">Apply Custom Theme</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

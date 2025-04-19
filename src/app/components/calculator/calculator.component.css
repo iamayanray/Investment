@@ -1,0 +1,134 @@
+.calculator-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 2rem;
+}
+
+mat-card {
+  width: 100%;
+  max-width: 700px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+mat-card:hover {
+  box-shadow: var(--shadow-hover) !important;
+}
+
+mat-card-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  color: var(--primary-color);
+}
+
+.title-icon {
+  margin-right: 8px;
+  color: var(--primary-color);
+}
+
+mat-card-subtitle {
+  margin-bottom: 20px;
+  color: var(--text-secondary);
+}
+
+.form-row-group {
+  margin-bottom: 24px;
+  padding-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+  padding-left: 8px;
+  border-left: 3px solid var(--primary-color);
+}
+
+.form-info {
+  display: flex;
+  align-items: flex-start;
+  background-color: rgba(33, 150, 243, 0.1);
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.form-info mat-icon {
+  color: var(--info-color);
+  margin-right: 8px;
+  font-size: 18px;
+  height: 18px;
+  width: 18px;
+}
+
+.form-row {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+mat-divider {
+  margin: 24px 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.form-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  font-weight: 500;
+  min-width: 120px;
+  border-radius: 4px;
+}
+
+/* Dark theme compatibility */
+:host-context(body.dark-theme) mat-card {
+  background-color: var(--card-color);
+  color: var(--text-primary);
+}
+
+:host-context(body.dark-theme) .form-info {
+  background-color: rgba(33, 150, 243, 0.05);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  mat-card {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  mat-card-title {
+    font-size: 1.3rem;
+  }
+  
+  .form-subtitle {
+    font-size: 1rem;
+  }
+} 
