@@ -46,7 +46,7 @@
       <div class="details-section">
         <h3>Year-by-Year Breakdown</h3>
         <div class="table-container">
-          <table mat-table [dataSource]="result.yearlyData" class="mat-elevation-z2">
+          <table mat-table [dataSource]="result.yearlyData" class="mat-elevation-z2 themed-table">
             <ng-container matColumnDef="year">
               <th mat-header-cell *matHeaderCellDef>Year</th>
               <td mat-cell *matCellDef="let row">{{ row.year }}</td>
