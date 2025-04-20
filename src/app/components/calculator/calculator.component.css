@@ -11,6 +11,8 @@ mat-card {
   border-radius: var(--border-radius);
   box-shadow: var(--shadow) !important;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden; /* Ensure consistent padding */
+  margin-top: 20px; /* Add top margin to card */
 }
 
 mat-card:hover {
@@ -23,6 +25,7 @@ mat-card-title {
   font-size: 1.5rem;
   margin-bottom: 8px;
   color: var(--primary-color);
+  padding: 24px 16px 0 16px; /* Increased top padding */
 }
 
 .title-icon {
@@ -33,6 +36,12 @@ mat-card-title {
 mat-card-subtitle {
   margin-bottom: 20px;
   color: var(--text-secondary);
+  padding: 0 16px;
+}
+
+/* Add padding to card content to match form field padding */
+:host ::ng-deep mat-card-content {
+  padding: 8px 16px 16px 16px;
 }
 
 .form-row-group {
@@ -107,6 +116,48 @@ mat-divider {
   background-color: rgba(33, 150, 243, 0.05);
 }
 
+/* Signature branding for the calculator */
+.calculator-container::after {
+  /* content: "Designed by Ayan Ray"; */
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 8px;
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Further improve suffixes */
+:host ::ng-deep .mat-form-field-suffix {
+  margin-left: 12px;
+  padding-right: 24px !important;
+  position: absolute;
+  right: 0;
+  color: var(--text-secondary) !important;
+  opacity: 0.9;
+}
+
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-suffix {
+  padding-right: 30px !important;
+  font-weight: 500;
+}
+
+/* Improve input field width to prevent suffix crowding */
+:host ::ng-deep .mat-form-field-infix {
+  width: calc(100% - 70px) !important;
+  padding-right: 16px;
+}
+
+:host ::ng-deep .mat-form-field-outline-end {
+  border-radius: 0 5px 5px 0;
+}
+
+/* Ensure the label doesn't overlap with the suffix */
+:host ::ng-deep .mat-form-field-label-wrapper {
+  width: calc(100% - 70px);
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   mat-card {
@@ -121,14 +172,105 @@ mat-divider {
   .form-actions button {
     width: 100%;
   }
+  
+  /* Improve chart visibility on medium devices */
+  :host ::ng-deep .chart-container {
+    height: auto !important;
+    min-height: 300px !important;
+    width: 100% !important;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Improve form fields layout on smaller screens */
+  .form-row-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-row {
+    margin-bottom: 16px;
+  }
+  
+  mat-card-title {
+    font-size: 1.3rem;
+    padding: 16px 16px 0 16px;
+  }
+  
+  mat-divider {
+    margin: 16px 0;
+  }
+  
+  /* Enhanced chart visibility for small devices */
+  :host ::ng-deep .chart-container {
+    min-height: 250px !important;
+    margin-bottom: 20px;
+  }
+  
+  :host ::ng-deep .summary-section {
+    flex-direction: column;
+  }
+  
+  :host ::ng-deep .summary-card {
+    width: 100% !important;
+    margin-bottom: 12px;
+  }
 }
 
 @media (max-width: 480px) {
   mat-card-title {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    padding: 12px 12px 0 12px;
+  }
+  
+  mat-card-subtitle {
+    padding: 0 12px;
+    font-size: 0.9rem;
+  }
+  
+  :host ::ng-deep mat-card-content {
+    padding: 6px 12px 12px 12px;
   }
   
   .form-subtitle {
     font-size: 1rem;
+  }
+  
+  .form-info {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+  
+  /* Optimize input fields for very small screens */
+  :host ::ng-deep .mat-form-field-infix {
+    width: calc(100% - 60px) !important;
+  }
+  
+  :host ::ng-deep .mat-form-field-suffix {
+    padding-right: 16px !important;
+  }
+  
+  :host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-suffix {
+    padding-right: 20px !important;
+  }
+  
+  /* Ensure optimal charts on small devices */
+  :host ::ng-deep .chart-container {
+    min-height: 220px !important;
+  }
+  
+  /* Make table responsive */
+  :host ::ng-deep table {
+    font-size: 0.8rem;
+  }
+  
+  :host ::ng-deep .mat-header-cell,
+  :host ::ng-deep .mat-cell {
+    padding: 6px 4px !important;
+  }
+  
+  /* Optimize result visualization */
+  :host ::ng-deep .result-section {
+    padding: 12px 0;
   }
 } 

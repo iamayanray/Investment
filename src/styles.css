@@ -249,3 +249,109 @@ body.dark-theme .mat-row:hover {
     font-size: 1.3rem;
   }
 }
+
+/* Material Icons specific styles */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ensure mat-icon renders correctly */
+mat-icon {
+  vertical-align: middle;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure charts are responsive on all devices */
+.chart-container {
+  position: relative;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 350px;
+  margin: 0 auto;
+}
+
+/* When charts are in smaller viewports */
+@media (max-width: 768px) {
+  .chart-container {
+    min-height: 300px;
+  }
+  
+  /* Ensure tables can scroll horizontally on small screens */
+  .mat-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .chart-container {
+    min-height: 250px;
+  }
+  
+  /* Make Angular Material components more touch-friendly */
+  .mat-button, .mat-raised-button, .mat-icon-button, .mat-stroked-button,
+  .mat-flat-button, .mat-fab, .mat-mini-fab {
+    min-height: 42px;
+  }
+  
+  /* Improve select dropdown touch targets */
+  .mat-select-trigger {
+    min-height: 42px;
+  }
+  
+  /* Improve form field touch targets */
+  .mat-form-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  
+  /* Improve input touch targets */
+  input.mat-input-element {
+    min-height: 42px;
+  }
+}
+
+/* Fix for iOS input zooming issue */
+@media screen and (-webkit-min-device-pixel-ratio:0) { 
+  select,
+  textarea,
+  input {
+    font-size: 16px !important;
+  }
+}
+
+/* Ensure consistent padding across all devices */
+.container-fluid {
+  padding: 0 16px;
+}
+
+/* Fix layout shifting during page load */
+html {
+  overflow-x: hidden;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Improve accessibility */
+:focus {
+  outline: 2px solid #1976d2 !important;
+  outline-offset: 2px !important;
+}

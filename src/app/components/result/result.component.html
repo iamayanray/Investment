@@ -7,19 +7,23 @@
       <div class="summary-section">
         <div class="summary-tile">
           <div class="summary-label">Future Value</div>
-          <div class="summary-value">₹{{ result.futureValue | number:'1.0-0' }}</div>
+          <div class="summary-value">₹{{ result.futureValue | indianCurrency }}</div>
         </div>
         <div class="summary-tile">
           <div class="summary-label">Total Invested</div>
-          <div class="summary-value">₹{{ result.totalInvested | number:'1.0-0' }}</div>
+          <div class="summary-value">₹{{ result.totalInvested | indianCurrency }}</div>
         </div>
         <div class="summary-tile">
           <div class="summary-label">Total Gains</div>
-          <div class="summary-value">₹{{ result.gain | number:'1.0-0' }}</div>
+          <div class="summary-value">₹{{ result.gain | indianCurrency }}</div>
         </div>
         <div class="summary-tile">
           <div class="summary-label">Returns</div>
           <div class="summary-value">{{ (result.gain / result.totalInvested) * 100 | number:'1.0-2' }}%</div>
+        </div>
+        <div class="summary-tile">
+          <div class="summary-label">Inflation-Adjusted Value</div>
+          <div class="summary-value">₹{{ result.yearlyData[result.yearlyData.length-1].inflationAdjustedBalance | indianCurrency }}</div>
         </div>
       </div>
 
@@ -52,23 +56,33 @@
               <td mat-cell *matCellDef="let row">{{ row.year }}</td>
             </ng-container>
 
+            <ng-container matColumnDef="monthlySip">
+              <th mat-header-cell *matHeaderCellDef>Monthly SIP</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.monthlySip | indianCurrency }}</td>
+            </ng-container>
+
             <ng-container matColumnDef="investment">
               <th mat-header-cell *matHeaderCellDef>Investment</th>
-              <td mat-cell *matCellDef="let row">₹{{ row.investment | number:'1.0-0' }}</td>
+              <td mat-cell *matCellDef="let row">₹{{ row.investment | indianCurrency }}</td>
             </ng-container>
 
             <ng-container matColumnDef="interest">
               <th mat-header-cell *matHeaderCellDef>Interest</th>
-              <td mat-cell *matCellDef="let row">₹{{ row.interest | number:'1.0-0' }}</td>
+              <td mat-cell *matCellDef="let row">₹{{ row.interest | indianCurrency }}</td>
             </ng-container>
 
             <ng-container matColumnDef="balance">
-              <th mat-header-cell *matHeaderCellDef>Balance</th>
-              <td mat-cell *matCellDef="let row">₹{{ row.balance | number:'1.0-0' }}</td>
+              <th mat-header-cell *matHeaderCellDef>Total</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.balance | indianCurrency }}</td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="['year', 'investment', 'interest', 'balance']"></tr>
-            <tr mat-row *matRowDef="let row; columns: ['year', 'investment', 'interest', 'balance'];"></tr>
+            <ng-container matColumnDef="inflationAdjustedBalance">
+              <th mat-header-cell *matHeaderCellDef>Inflation-Adjusted Total</th>
+              <td mat-cell *matCellDef="let row">₹{{ row.inflationAdjustedBalance | indianCurrency }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
         </div>
       </div>

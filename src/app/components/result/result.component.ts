@@ -17,12 +17,21 @@ export class ResultComponent implements OnChanges, OnInit, OnDestroy {
   pieChartOptions: Highcharts.Options = {};
   updateFlag = false;
   
+  displayedColumns: string[] = ['year', 'monthlySip', 'investment', 'interest', 'balance', 'inflationAdjustedBalance'];
+  
   private themeSubscription: Subscription | null = null;
   private isDarkMode = false;
   private primaryColor = '#1976d2';
   private accentColor = '#ff4081';
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService) {
+    // Set up Indian numbering format for Highcharts
+    Highcharts.setOptions({
+      lang: {
+        numericSymbols: ['K', 'L', 'Cr', 'Arab']
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Subscribe to theme changes
@@ -74,13 +83,51 @@ export class ResultComponent implements OnChanges, OnInit, OnDestroy {
           text: 'Amount (₹)'
         },
         labels: {
-          format: '₹{value:,.0f}'
+          formatter: function() {
+            // Format in Indian style (simplified)
+            const value = this.value as number;
+            if (value >= 10000000) {
+              return '₹' + (value / 10000000).toFixed(2) + ' Cr';
+            } else if (value >= 100000) {
+              return '₹' + (value / 100000).toFixed(2) + ' L';
+            } else if (value >= 1000) {
+              return '₹' + (value / 1000).toFixed(2) + ' K';
+            }
+            return '₹' + value;
+          }
         }
       }],
       tooltip: {
         shared: true,
-        valuePrefix: '₹',
-        valueDecimals: 2,
+        useHTML: true,
+        formatter: function() {
+          let s = '<b>' + this.x + '</b><br/>';
+          this.points?.forEach(function(point) {
+            // Format values in Indian style with commas
+            const value = point.y as number;
+            let formattedValue = Math.round(value).toString();
+            
+            // Apply Indian number formatting
+            let lastThree = formattedValue.substring(formattedValue.length - 3);
+            let otherNumbers = formattedValue.substring(0, formattedValue.length - 3);
+            if (otherNumbers !== '') {
+              let formattedOtherNumbers = '';
+              let iteration = 0;
+              for (let i = otherNumbers.length - 1; i >= 0; i--) {
+                if (iteration !== 0 && iteration % 2 === 0) {
+                  formattedOtherNumbers = ',' + formattedOtherNumbers;
+                }
+                formattedOtherNumbers = otherNumbers.charAt(i) + formattedOtherNumbers;
+                iteration++;
+              }
+              formattedValue = formattedOtherNumbers + ',' + lastThree;
+            }
+            
+            s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + 
+                 point.series.name + ': <b>₹' + formattedValue + '</b>';
+          });
+          return s;
+        },
         backgroundColor: this.isDarkMode ? '#424242' : '#ffffff',
         style: {
           color: this.isDarkMode ? '#ffffff' : '#333333'
@@ -114,10 +161,17 @@ export class ResultComponent implements OnChanges, OnInit, OnDestroy {
         type: 'spline',
         data: this.result.yearlyData.map(data => data.balance),
         yAxis: 0
+      }, {
+        name: 'Inflation-Adjusted Balance',
+        type: 'spline',
+        dashStyle: 'Dash',
+        data: this.result.yearlyData.map(data => data.inflationAdjustedBalance),
+        yAxis: 0,
+        color: colors[3]
       }]
     };
 
-    // Pie Chart - Investment vs Gains
+    // Pie Chart - Investment vs Gains (with inflation adjustment)
     this.pieChartOptions = {
       chart: {
         type: 'pie',
@@ -128,7 +182,34 @@ export class ResultComponent implements OnChanges, OnInit, OnDestroy {
         text: 'Investment vs Gains'
       },
       tooltip: {
-        pointFormat: '{series.name}: <b>₹{point.y:,.2f}</b> ({point.percentage:.1f}%)',
+        useHTML: true,
+        formatter: function() {
+          // In a pie chart context, 'this' has a different structure
+          const value = this.y as number;
+          const name = this.key || 'Value';
+          const percentage = this.percentage || 0;
+          
+          let formattedValue = Math.round(value).toString();
+          
+          // Apply Indian number formatting
+          let lastThree = formattedValue.substring(formattedValue.length - 3);
+          let otherNumbers = formattedValue.substring(0, formattedValue.length - 3);
+          if (otherNumbers !== '') {
+            let formattedOtherNumbers = '';
+            let iteration = 0;
+            for (let i = otherNumbers.length - 1; i >= 0; i--) {
+              if (iteration !== 0 && iteration % 2 === 0) {
+                formattedOtherNumbers = ',' + formattedOtherNumbers;
+              }
+              formattedOtherNumbers = otherNumbers.charAt(i) + formattedOtherNumbers;
+              iteration++;
+            }
+            formattedValue = formattedOtherNumbers + ',' + lastThree;
+          }
+          
+          return '<b>' + name + '</b>: <b>₹' + formattedValue + 
+                '</b> (' + percentage.toFixed(1) + '%)';
+        },
         backgroundColor: this.isDarkMode ? '#424242' : '#ffffff',
         style: {
           color: this.isDarkMode ? '#ffffff' : '#333333'

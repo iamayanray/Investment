@@ -28,13 +28,17 @@ import { ResultComponent } from './components/result/result.component';
 import { ThemeSwitcherComponent } from './components/theme-switcher/theme-switcher.component';
 import { ThemeSelectorComponent } from './components/theme-selector/theme-selector.component';
 
+// Custom Pipes
+import { IndianCurrencyPipe } from './pipes/indian-currency.pipe';
+
 @NgModule({
   declarations: [
     AppComponent,
     CalculatorComponent,
     ResultComponent,
     ThemeSwitcherComponent,
-    ThemeSelectorComponent
+    ThemeSelectorComponent,
+    IndianCurrencyPipe
   ],
   imports: [
     BrowserModule,

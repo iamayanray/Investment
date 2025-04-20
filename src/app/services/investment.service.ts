@@ -6,6 +6,8 @@ export interface InvestmentParams {
   sip: number;
   annualRatePercent: number;
   years: number;
+  sipStopYear: number;
+  inflationRatePercent: number;
   stepRatePercent: number;
   stepType: 'none' | 'stepup' | 'stepdown';
 }
@@ -26,6 +28,8 @@ export interface InvestmentResult {
     investment: number;
     interest: number;
     balance: number;
+    monthlySip: number;
+    inflationAdjustedBalance: number;
   }[];
 }
 
@@ -44,12 +48,16 @@ export class InvestmentService {
       sip = 0,
       annualRatePercent = 12,
       years = 10,
+      sipStopYear = years,
+      inflationRatePercent = 6.5,
       stepRatePercent = 0,
       stepType = 'none'
     } = params;
 
     const months = years * 12;
     const monthlyRate = annualRatePercent / 12 / 100;
+    const monthlyInflationRate = inflationRatePercent / 12 / 100;
+    
     let totalInvested = lumpSum;
     let futureValue = lumpSum;
 
@@ -57,48 +65,61 @@ export class InvestmentService {
     const yearlySips: YearlySip[] = [];
     const yearlyData = [];
 
-    // Track year-by-year growth for chart
-    let yearlyInvestment = lumpSum;
-    let yearlyInterest = 0;
-    let yearlyBalance = lumpSum;
+    // Calculate inflation factor for year 0 (starting point)
+    let cumulativeInflationFactor = 1;
 
     for (let year = 1; year <= years; year++) {
       let yearlyInvestedAmount = 0;
       let yearStartBalance = futureValue;
+      
+      // Update inflation factor for this year
+      if (year > 1) {
+        cumulativeInflationFactor *= (1 + inflationRatePercent / 100);
+      }
       
       for (let month = 0; month < 12; month++) {
         // Grow the existing future value
         const interestForMonth = futureValue * monthlyRate;
         futureValue += interestForMonth;
         
-        // Add SIP for this month
-        futureValue += currentSip;
-        totalInvested += currentSip;
-        yearlyInvestedAmount += currentSip;
+        // Add SIP for this month if we haven't reached the SIP stop year
+        if (year <= sipStopYear) {
+          futureValue += currentSip;
+          totalInvested += currentSip;
+          yearlyInvestedAmount += currentSip;
+        }
       }
 
       // Calculate this year's interest
       const interestForYear = futureValue - yearStartBalance - yearlyInvestedAmount;
       
+      // Calculate inflation-adjusted balance (real purchasing power)
+      const inflationAdjustedBalance = futureValue / cumulativeInflationFactor;
+      
       yearlyData.push({
         year,
         investment: Number(yearlyInvestedAmount.toFixed(2)),
         interest: Number(interestForYear.toFixed(2)),
-        balance: Number(futureValue.toFixed(2))
+        balance: Number(futureValue.toFixed(2)),
+        monthlySip: year <= sipStopYear ? Number(currentSip.toFixed(2)) : 0,
+        inflationAdjustedBalance: Number(inflationAdjustedBalance.toFixed(2))
       });
 
       yearlySips.push({
         year,
         yearlySip: Number(yearlyInvestedAmount.toFixed(2)),
-        monthlySip: Number((yearlyInvestedAmount / 12).toFixed(2))
+        monthlySip: year <= sipStopYear ? Number(currentSip.toFixed(2)) : 0
       });
 
-      // Apply step-up/down at end of the year
-      if (stepType.toLowerCase() === 'stepup') {
-        currentSip += currentSip * (stepRatePercent / 100);
-      } else if (stepType.toLowerCase() === 'stepdown') {
-        currentSip -= currentSip * (stepRatePercent / 100);
-        currentSip = Math.max(currentSip, 0);
+      // Only apply step-up/down if not reached SIP stop year yet
+      if (year < sipStopYear) {
+        // Apply step-up/down at end of the year
+        if (stepType.toLowerCase() === 'stepup') {
+          currentSip += currentSip * (stepRatePercent / 100);
+        } else if (stepType.toLowerCase() === 'stepdown') {
+          currentSip -= currentSip * (stepRatePercent / 100);
+          currentSip = Math.max(currentSip, 0);
+        }
       }
     }
 

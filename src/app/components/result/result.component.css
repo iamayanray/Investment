@@ -2,6 +2,8 @@
   margin-top: 30px;
   width: 100%;
   max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .summary-section {
@@ -34,12 +36,14 @@
   font-size: 14px;
   color: var(--text-secondary);
   margin-bottom: 8px;
+  text-align: center;
 }
 
 .summary-value {
   font-size: 24px;
   font-weight: 600;
   color: var(--primary-color);
+  text-align: center;
 }
 
 .charts-container {
@@ -66,6 +70,7 @@
   margin-bottom: 15px;
   color: var(--text-primary);
   font-weight: 500;
+  text-align: center;
 }
 
 .table-container {
@@ -134,13 +139,70 @@ table {
 :host ::ng-deep .themed-table .mat-header-cell {
   color: var(--text-secondary);
   font-weight: 500;
+  text-align: center !important;
+  justify-content: center;
 }
 
 :host ::ng-deep .themed-table .mat-cell {
   color: var(--text-primary);
+  text-align: center !important;
+  justify-content: center;
+  padding: 12px 10px;
+}
+
+/* Fix for responsive tables */
+:host ::ng-deep .mat-header-row, 
+:host ::ng-deep .mat-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:host ::ng-deep .mat-cell, 
+:host ::ng-deep .mat-header-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Ensure equal cell widths */
+:host ::ng-deep .mat-header-cell:first-child,
+:host ::ng-deep .mat-cell:first-child {
+  flex: 0.5;
+}
+
+:host ::ng-deep .mat-header-cell:last-child,
+:host ::ng-deep .mat-cell:last-child {
+  flex: 1.5;
 }
 
 /* Add subtle hover effect to table rows */
 :host ::ng-deep .themed-table .mat-row:hover {
   background-color: var(--divider-color);
+}
+
+/* Center align mat-card title and subtitle */
+:host ::ng-deep mat-card-title,
+:host ::ng-deep mat-card-subtitle {
+  text-align: center;
+  width: 100%;
+  display: block;
+  padding: 16px 16px 0 16px;
+}
+
+:host ::ng-deep mat-card-subtitle {
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+:host ::ng-deep mat-card-content {
+  padding: 8px 16px 16px 16px;
+}
+
+:host ::ng-deep mat-card {
+  overflow: hidden;
 } 
